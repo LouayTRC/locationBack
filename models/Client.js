@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 
-const adminSchema=mongoose.Schema({
+const clientSchema=mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
@@ -8,4 +8,4 @@ const adminSchema=mongoose.Schema({
     },
 },{versionKey:false,timestamps: true});
 
-module.exports=mongoose.model('Admin',adminSchema);
+module.exports=mongoose.model('Client',clientSchema);

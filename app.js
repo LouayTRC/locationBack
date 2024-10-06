@@ -4,9 +4,7 @@ const app=express();
 const cors=require('cors');
 
 // Import Routers : 
-const carTypeRouter=require("./routers/carTypeRouter")
 const carRouter=require("./routers/carRouter");
-const router = require('./routers/carTypeRouter');
 
 
 
@@ -37,12 +35,7 @@ app.use(cors(corsOpts));
 
 
 // Call your routers Here !!
-app.use('/api/carType',carTypeRouter)
 app.use('/api/car',carRouter)
-
-
-
-
 
 
 
