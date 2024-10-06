@@ -5,6 +5,8 @@ const cors=require('cors');
 
 // Import Routers : 
 const carRouter=require("./routers/carRouter");
+const categoryRouter=require("./routers/categoryRouter");
+const marqueRouter=require("./routers/marqueRouter");
 
 
 
@@ -36,6 +38,8 @@ app.use(cors(corsOpts));
 
 // Call your routers Here !!
 app.use('/api/car',carRouter)
+app.use('/api/category',categoryRouter)
+app.use('/api/marque',marqueRouter)
 
 
 

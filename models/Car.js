@@ -5,7 +5,15 @@ const carSchema=mongoose.Schema({
     price:{type:Number,required:true},
     features:{type:String,required:true},
     description:{type:String,required:true},
-    picture:{type:String,required:true},
+    picture:{type:String},
+    category:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Category'
+    },
+    marque:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Marque'
+    }
 },{versionKey:false,timestamps: true});
 
 module.exports=mongoose.model('Car',carSchema);
