@@ -6,8 +6,8 @@ const Marque = require("../models/Marque")
 exports.addCar = async (req, res, next) => {
   try {
     
-    const category = await Category.findOne({ _id: req.body.category })
-    const marque = await Marque.findOne({ _id: req.body.marque })
+    const category = await Category.findOne({ name: req.body.category })
+    const marque = await Marque.findOne({ name: req.body.marque })
 
     delete req.body.category;
     delete req.body.marque;
@@ -28,10 +28,13 @@ exports.addCar = async (req, res, next) => {
 
 }
 
-exports.getCars = (req, res, next) => {
-  Car.find()
-    .then((c) => res.status(201).json(c))
-    .catch(error => res.status(400).json({ error }))
+exports.getCars = async (req, res, next) => {
+  try {
+    const cars= await Car.find().populate("category").populate("marque")
+    res.status(200).json(cars)
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 }
 
 exports.getDisponibility = async (req, res, next) => {
