@@ -7,6 +7,7 @@ const cors=require('cors');
 const carRouter=require("./routers/carRouter");
 const categoryRouter=require("./routers/categoryRouter");
 const marqueRouter=require("./routers/marqueRouter");
+const reservationRouter=require("./routers/reservationRouter");
 
 
 
@@ -40,6 +41,7 @@ app.use(cors(corsOpts));
 app.use('/api/car',carRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/marque',marqueRouter)
+app.use('/api/reservation',reservationRouter)
 
 
 
