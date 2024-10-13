@@ -13,7 +13,9 @@ const carSchema=mongoose.Schema({
     marque:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Marque'
-    }
+    },
+    picture:{type:String},
+    status:{type:Number,required:true}
 },{versionKey:false,timestamps: true});
 
 module.exports=mongoose.model('Car',carSchema);

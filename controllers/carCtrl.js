@@ -15,7 +15,8 @@ exports.addCar = async (req, res, next) => {
     const car = new Car({
       ...req.body
     })
-
+    
+    
     car.category=category
     car.marque=marque
 
