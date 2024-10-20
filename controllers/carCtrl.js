@@ -5,6 +5,7 @@ const Marque = require("../models/Marque")
 
 exports.addCar = async (req, res, next) => {
   try {
+    console.log("req",req.body);
     
     const category = await Category.findOne({ name: req.body.category })
     const marque = await Marque.findOne({ name: req.body.marque })
@@ -19,10 +20,13 @@ exports.addCar = async (req, res, next) => {
     
     car.category=category
     car.marque=marque
+    car.status=1
 
     car.save()
       .then((c) => res.status(201).json(c))
-      .catch(error => res.status(400).json({ error }))
+      .catch(error => {res.status(400).json({ error });
+    console.log(error);
+    })
   } catch (error) {
     res.status(500).json({ error })
   }
