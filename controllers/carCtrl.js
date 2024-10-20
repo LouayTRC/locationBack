@@ -60,3 +60,46 @@ exports.getDisponibility = async (req, res, next) => {
     return res.status(500).json(error);
   }
 };
+
+exports.getCarById = async (req, res) => {
+  const carId = req.params.id;
+  if (!carId) {
+      return res.status(400).json({ error: "Car ID is required" });
+  }
+
+  try {
+      if (!mongoose.Types.ObjectId.isValid(carId)) {
+          return res.status(400).json({ error: "Invalid car ID" });
+      }
+
+      const car = await Car.findById(carId);
+      if (!car) {
+          return res.status(404).json({ error: "Car not found" });
+      }
+      res.status(200).json(car);
+  } catch (error) {
+      res.status(500).json({ error });
+  }
+};
+
+
+exports.updateCarStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params.id;
+    const { status } = req.body.status; 
+
+    const updatedCar = await Car.findByIdAndUpdate(
+      id,
+      { status }, 
+      { new: true }
+    );
+
+    if (!updatedCar) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    res.status(200).json(updatedCar);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
