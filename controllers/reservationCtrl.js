@@ -25,7 +25,7 @@ exports.addReservation = async (req, res, next) => {
 };
 exports.getReservations=async (req,res,next)=>{
    try {
-        const reservations=await Reservation.find().populate('car').populate('client');
+        const reservations=await Reservation.find()
         res.status(200).json(reservations)
    } catch (error) {
         res.status(400).json(error)
