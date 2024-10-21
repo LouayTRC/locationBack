@@ -22,7 +22,7 @@ exports.addReservation = async (req, res, next) => {
 
         const diffInDays = endDate.diff(startDate, 'day');
         console.log("Difference in days:", diffInDays);
-        somme+=120*diffInDays;
+        somme+=car.price*diffInDays;
 
         if (req.body.location) {
             
@@ -51,8 +51,6 @@ exports.addReservation = async (req, res, next) => {
                 const reservation=new Reservation({
                     car,
                     client:c,
-                    locationLong:req.body.location.longitude,
-                    locationLat:req.body.location.latitude,
                     distanceEnKm:distanceEnKm.toFixed(3),
                     driver:driver,
                     dateStart:startDate,
@@ -60,6 +58,15 @@ exports.addReservation = async (req, res, next) => {
                     status:0,
                     total:somme.toFixed(3)
                 })
+
+                if (req.body.location) {
+                    reservation.locationLong=req.body.location.longitude;
+                    reservation.locationLat=req.body.location.latitude;
+                }
+                else{
+                    reservation.latitude=null
+                    reservation.longitude=null
+                }
         
                 reservation.save()
                 .then((r)=>{
