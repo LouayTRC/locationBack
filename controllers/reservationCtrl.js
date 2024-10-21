@@ -100,4 +100,31 @@ exports.getReservations = async (req, res, next) => {
     }
 };
 
+exports.getReservationById = async (req, res, next) => {
+    try {
+        const reservation = await Reservation.findOne({_id:req.params.id})
+            .populate({
+                path: 'client', 
+                populate: {
+                    path: 'user', 
+                }
+            })
+            .populate({
+                path: 'car', 
+                populate: [
+                    { path: 'category' }, 
+                    { path: 'marque' }   
+                ]
+            });
 
+        res.status(200).json(reservation);
+    } catch (error) {
+        res.status(400).json({ error: error.message }); 
+    }
+  };
+  
+  exports.updateReservationStatus = (req, res, next) => {
+    Reservation.updateOne({_id: req.params.id}, {status: req.params.status, _id: req.params.id})
+      .then(() => res.status(200).json({message: 'Status Modifié'}))
+      .catch(error => res.status(400).json({error}));
+  };
