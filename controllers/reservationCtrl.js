@@ -56,16 +56,20 @@ exports.addReservation = async (req, res, next) => {
                     dateStart:startDate,
                     dateEnd:endDate,
                     status:0,
+                    dateDiff:diffInDays,
                     total:somme.toFixed(3)
                 })
 
                 if (req.body.location) {
+
                     reservation.locationLong=req.body.location.longitude;
                     reservation.locationLat=req.body.location.latitude;
+                    
                 }
                 else{
                     reservation.latitude=null
                     reservation.longitude=null
+                    
                 }
         
                 reservation.save()
