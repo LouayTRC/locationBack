@@ -10,6 +10,7 @@ exports.addReservation = async (req, res, next) => {
     const driverPriceByDay=50;
     const priceByKm=10;
     var somme=0;
+    var distanceEnKm=0;
     const car=await Car.findOne({_id:req.body.carId}).populate('category').populate('marque')
     console.log(car);
     
@@ -24,11 +25,11 @@ exports.addReservation = async (req, res, next) => {
         somme+=120*diffInDays;
 
         if (req.body.location) {
-            console.log("aa",req.body.location);
             
-            console.log("distance en km :",localLocation.distanceTo(req.body.location));
+            distanceEnKm=localLocation.distanceTo(req.body.location)
+            console.log("distance en km :",distanceEnKm);
             
-            somme+=localLocation.distanceTo(req.body.location)*priceByKm
+            somme+=distanceEnKm*priceByKm
         }
 
         if (req.body.driver) {
@@ -46,12 +47,13 @@ exports.addReservation = async (req, res, next) => {
             })
             client.save()
             .then(async (c)=>{
-                const savedCar=await Car.findOne({_id:c._id}).populate('category').populate('marque')
+                
                 const reservation=new Reservation({
-                    car:savedCar,
+                    car,
                     client:c,
                     locationLong:req.body.location.longitude,
                     locationLat:req.body.location.latitude,
+                    distanceEnKm:distanceEnKm.toFixed(3),
                     driver:driver,
                     dateStart:startDate,
                     dateEnd:endDate,
@@ -102,6 +104,8 @@ exports.getReservations = async (req, res, next) => {
 
 exports.getReservationById = async (req, res, next) => {
     try {
+        
+        
         const reservation = await Reservation.findOne({_id:req.params.id})
             .populate({
                 path: 'client', 
@@ -116,7 +120,8 @@ exports.getReservationById = async (req, res, next) => {
                     { path: 'marque' }   
                 ]
             });
-
+            
+            
         res.status(200).json(reservation);
     } catch (error) {
         res.status(400).json({ error: error.message }); 

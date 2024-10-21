@@ -11,6 +11,7 @@ const reservationSchema=mongoose.Schema({
     },
     locationLong:{type:String},
     locationLat:{type:String},
+    distanceEnKm:{type:Number},
     driver:{type:Boolean,required:true},
     dateStart:{type:Date,required:true},
     dateEnd:{type:Date,required:true},
