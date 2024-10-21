@@ -21,7 +21,7 @@ exports.addReservation = async (req, res, next) => {
 
         const diffInDays = endDate.diff(startDate, 'day');
         console.log("Difference in days:", diffInDays);
-        somme+=car.price*diffInDays;
+        somme+=120*diffInDays;
 
         if (req.body.location) {
             console.log("aa",req.body.location);
@@ -46,9 +46,9 @@ exports.addReservation = async (req, res, next) => {
             })
             client.save()
             .then(async (c)=>{
-                
+                const savedCar=await Car.findOne({_id:c._id}).populate('category').populate('marque')
                 const reservation=new Reservation({
-                    car:car,
+                    car:savedCar,
                     client:c,
                     locationLong:req.body.location.longitude,
                     locationLat:req.body.location.latitude,
