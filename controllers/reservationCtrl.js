@@ -6,15 +6,20 @@ const Location=require('../models/Location')
 const dayjs=require('dayjs')
 
 exports.addReservation = async (req, res, next) => {
+    console.log("dd");
+    
     const localLocation=new Location(36.851256, 10.211287)
     const driverPriceByDay=50;
     const priceByKm=10;
     var somme=0;
     var distanceEnKm=0;
     const car=await Car.findOne({_id:req.body.carId}).populate('category').populate('marque')
-    console.log(car);
+    
+    console.log("eeeee",car);
     
     if(car.status==1){
+        console.log("ddd");
+        
         let driver=false;
         const { dateStart, dateEnd } = req.body;
         const startDate = dayjs(dateStart);
@@ -56,7 +61,7 @@ exports.addReservation = async (req, res, next) => {
                     dateStart:startDate,
                     dateEnd:endDate,
                     status:0,
-                    dateDiff:diffInDays,
+                    diffDays:diffInDays,
                     total:somme.toFixed(3)
                 })
 
@@ -71,10 +76,13 @@ exports.addReservation = async (req, res, next) => {
                     reservation.longitude=null
                     
                 }
-        
+                console.log("bb",reservation);
+                
                 reservation.save()
                 .then((r)=>{
-                    res.status(201).json((r))
+                    console.log("r",r);
+                    
+                    res.status(201).json(r)
                 })
                 .catch(error=>res.status(400).json(error))
             })

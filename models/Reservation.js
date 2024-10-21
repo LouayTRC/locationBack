@@ -16,7 +16,6 @@ const reservationSchema=mongoose.Schema({
     driver:{type:Boolean,required:true},
     dateStart:{type:Date,required:true},
     dateEnd:{type:Date,required:true},
-    dateDiff:{type:Number},
     status:{type:Number,required:true},
     total:{type:Number,required:true},
 },{versionKey:false,timestamps: true});
