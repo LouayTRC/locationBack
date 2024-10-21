@@ -1,5 +1,4 @@
 const mongoose=require('mongoose');
-const Location=require('../models/Location')
 
 const reservationSchema=mongoose.Schema({
     client:{
