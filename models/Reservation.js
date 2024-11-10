@@ -3,17 +3,22 @@ const mongoose=require('mongoose');
 const reservationSchema=mongoose.Schema({
     client:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Client'
+        ref: 'Client',
+        required:true
     },
     car:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Car'
+        ref: 'Car',
+        required:true
+    },
+    driver:{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Driver'
     },
     locationLong:{type:String},
     locationLat:{type:String},
     distanceEnKm:{type:Number},
     diffDays:{type:Number},
-    driver:{type:Boolean,required:true},
     dateStart:{type:Date,required:true},
     dateEnd:{type:Date,required:true},
     status:{type:Number,required:true},

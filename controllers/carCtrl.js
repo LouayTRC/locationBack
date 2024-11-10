@@ -42,6 +42,15 @@ exports.getCars = async (req, res, next) => {
   }
 }
 
+exports.getCarById = async (req, res, next) => {
+  try {
+    const car= await Car.findOne({_id:req.params.id}).populate("category").populate("marque")
+    res.status(200).json(car)
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+}
+
 exports.getDisponibility = async (req, res, next) => {
   try {
 
@@ -65,14 +74,24 @@ exports.getDisponibility = async (req, res, next) => {
   }
 };
 
-exports.getCarById = (req, res, next) => {
-  Car.findOne({_id:req.params.id})
-    .then(car => res.status(200).json(car))
-    .catch(error => res.status(400).json({error}));
-};
 
 exports.updateCarStatus = (req, res, next) => {
   Car.updateOne({_id: req.params.id}, {status: req.body.status, _id: req.params.id})
     .then(() => res.status(200).json({message: 'Status Modifié'}))
     .catch(error => res.status(400).json({error}));
 };
+
+exports.deleteCar=(req,res,next)=>{
+  Car.deleteOne({_id:req.params.id})
+  .then(()=>res.status(200).json(true))
+  .catch((error)=>res.status(400).json(error))
+}
+
+exports.updateCar=(req,res,next)=>{
+  Car.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+  .then(async (car)=>{
+    car=await Car.findOne({_id: req.params.id}).populate('marque').populate("category")
+    res.status(200).json(car)
+  })
+  .catch((error)=>res.status(400).json(error))
+}

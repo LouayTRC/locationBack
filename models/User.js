@@ -6,10 +6,12 @@ const userSchema=mongoose.Schema({
     phone:{type:String,required:true},
     cin:{type:String,required:true},
     name:{type:String,required:true},
-    // role:{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Role'
-    // },
+    password:{type:String,required:true},
+    status:{type:Number,required:true},
+    role:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role'
+    },
     // pdp:{type:String,required:true},
 },{ versionKey: false,timestamps: true});
 

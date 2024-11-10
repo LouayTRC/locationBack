@@ -5,9 +5,12 @@ const cors=require('cors');
 
 // Import Routers : 
 const carRouter=require("./routers/carRouter");
+const userRouter=require("./routers/userRouter");
 const categoryRouter=require("./routers/categoryRouter");
 const marqueRouter=require("./routers/marqueRouter");
 const reservationRouter=require("./routers/reservationRouter");
+const authRouter=require("./routers/authRouter");
+const roleRouter=require("./routers/roleRouter");
 
 
 
@@ -42,6 +45,9 @@ app.use('/api/car',carRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/marque',marqueRouter)
 app.use('/api/reservation',reservationRouter)
+app.use('/api/user',userRouter)
+app.use('/api/role',roleRouter)
+app.use('/api/auth',authRouter)
 
 
 
