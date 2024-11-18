@@ -5,12 +5,13 @@ const userCtrl = require('../controllers/userCtrl');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Role = require('../models/Role')
+const Admin = require('../models/Admin')
 
 
 
 exports.login = (req, res, next) => {
-    console.log("req",req.body);
-    
+    console.log("req", req.body);
+
     User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {
@@ -26,8 +27,8 @@ exports.login = (req, res, next) => {
                             return res.status(401).json({ message: "your profile isn't activated " });
                         } else {
                             await user.populate('role')
-                            console.log("user login",user);
-                            
+                            console.log("user login", user);
+
                             return res.status(200).json({
                                 user,
                                 token: jwt.sign(
@@ -47,43 +48,60 @@ exports.login = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
 }
 
-exports.signup = async (req, res, next) => {
+exports.driverSignup = async (req, res, next) => {
     try {
-        const role = await Role.findOne({ name: req.body.user.role })
-
-    if (role.name == "DRIVER") {
-        const user = await userCtrl.createUser(req.body.user)
-        user.role = role
-        user.status = 0
-        await user.save()
-        const driver = new Driver({
-            user,
-            region:req.body.region,
-            priceByDay:req.body.priceByDay
-        })
-        driver.save()
-            .then((driver) => { console.log("driver",driver);
-            
-                res.status(201).json(driver)})
-            .catch(error => res.status(400).json({ error }))
-    } else {
+        console.log(req.body);
         
-        const user = await userCtrl.createUser(req.body.user)
-        user.role = role
-        user.status = 1
-        await user.save()
-        const client = new Client({
-            user
-        })
-        client.save()
-            .then((client) => {console.log("client",client);
-                res.status(201).json(client)})
-            .catch(error => res.status(400).json({ error }))
-    }
+        const role = await Role.findOne({ name: "DRIVER" })
+
+            const user = await userCtrl.createUser(req.body.user)
+            user.role = role
+            user.status = 0
+            await user.save()
+            const driver = new Driver({
+                user,
+                region: req.body.region,
+                priceByDay: req.body.priceByDay,
+                genre:req.body.genre
+            })
+            driver.save()
+                .then((driver) => {
+                    console.log("driver", driver);
+
+                    res.status(201).json(driver)
+                })
+                .catch(error => res.status(400).json({ error }))
     } catch (error) {
         res.status(400).json({ error })
     }
-    
+
+}
+
+exports.clientSignup = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        
+        const role = await Role.findOne({ name: "CLIENT" })
+
+        
+            const user = await userCtrl.createUser(req.body.user)
+            user.role = role
+            user.status = 1
+            await user.save()
+            const client = new Client({
+                user
+            })
+            client.save()
+                .then((client) => {
+                    console.log("client", client);
+                    res.status(201).json(client)
+                })
+                .catch(error => res.status(400).json({ error }))
+        
+    } catch (error) {
+        res.status(400).json({ error })
+    }
+
 }
 
 exports.verifyToken = (req, res, next) => {
@@ -101,4 +119,21 @@ exports.verifyToken = (req, res, next) => {
             data: 'error'
         });
     }
+}
+
+exports.addAdmin = async (req, res, next) => {
+    const role = await Role.findOne({ name: "ADMIN" })
+    const user = await userCtrl.createUser(req.body)
+    user.role = role
+    user.status = 1
+    await user.save()
+    const admin = new Admin({
+        user
+    })
+    admin.save()
+    .then((a) => {
+        console.log("admin", a);
+        res.status(201).json(a)
+    })
+    .catch(error => res.status(400).json({ error }))
 }

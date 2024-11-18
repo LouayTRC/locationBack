@@ -2,7 +2,6 @@ const User=require('../models/User')
 const Reservation=require('../models/Reservation')
 const Driver=require('../models/Driver')
 const bcrypt=require('bcrypt')
-const { populate } = require('../models/Role')
 
 exports.addDriver=(req,res,next)=>{
     const user=new User({
@@ -20,6 +19,21 @@ exports.addDriver=(req,res,next)=>{
         .catch((error)=>res.status(400).json(error))
     })
     .catch((error)=>res.status(400).json(error))
+}
+
+exports.updateStatus=async (req,res,next)=>{
+    try {
+        const user=await User.findOne({_id:req.params.id})
+        if (user.status==0) {
+            user.status=1
+        } else {
+            user.status=0
+        }
+        await user.save()
+        res.status(200).json()  
+    } catch (error) {
+        res.status(400).json(error)  
+    }
 }
 
 exports.getDrivers=async (req,res,next)=>{

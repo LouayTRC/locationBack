@@ -7,12 +7,14 @@ const Driver = require('../models/Driver')
 const User = require('../models/User')
 
 exports.addReservation = async (req, res, next) => {
+    console.log("ddd", req.body);
 
-    const localLocation = new Location(36.851256, 10.211287)
+    const localLocation = new Location(36.851256, 10.211287);
     const priceByKm = 10;
     var somme = 0;
     var distanceEnKm = 0;
-    const car = await Car.findOne({ _id: req.body.carId }).populate('category').populate('marque')
+    const car = await Car.findOne({ _id: req.body.carId }).populate('category').populate('marque');
+    
     if (car.status == 1) {
         console.log("ddd");
 
@@ -26,21 +28,19 @@ exports.addReservation = async (req, res, next) => {
         somme += car.price * diffInDays;
 
         if (req.body.location) {
-
-            distanceEnKm = localLocation.distanceTo(req.body.location)
+            distanceEnKm = localLocation.distanceTo(req.body.location);
             console.log("distance en km :", distanceEnKm);
-
-            somme += distanceEnKm * priceByKm
+            somme += distanceEnKm * priceByKm;
         }
 
         if (req.body.driver) {
-            const user = await User.findOne({ _id: req.body.driver })
-            driver = await Driver.findOne({ user: user })
-            somme += driver.priceByDay * diffInDays
+            const user = await User.findOne({ _id: req.body.driver });
+            driver = await Driver.findOne({ user: user });
+            somme += driver.priceByDay * diffInDays;
         }
-        console.log("userId", req.body.user);
 
-        const user = await User.findOne({ _id: req.body.user })
+        console.log("userId", req.body.user);
+        const user = await User.findOne({ _id: req.body.user });
         console.log("usss", user);
 
         const client = await Client.findOne({ user: user }).populate({
@@ -48,7 +48,7 @@ exports.addReservation = async (req, res, next) => {
             populate: {
                 path: 'role',
             }
-        })
+        });
 
         const reservation = new Reservation({
             car,
@@ -60,42 +60,67 @@ exports.addReservation = async (req, res, next) => {
             status: 0,
             diffDays: diffInDays,
             total: somme.toFixed(3)
-        })
+        });
 
         if (req.body.location) {
-
             reservation.locationLong = req.body.location.longitude;
             reservation.locationLat = req.body.location.latitude;
-
-        }
-        else {
-            reservation.latitude = null
-            reservation.longitude = null
-
+        } else {
+            reservation.latitude = null;
+            reservation.longitude = null;
         }
 
         reservation.save()
             .then(async (r) => {
                 console.log("r", r);
-                console.log("driver",driver);
-                
-                driver.reservations.push(r);
 
-                // Save the driver with the updated reservations array
-                await driver.save();
+                // If driver is present, add the reservation to the driver's reservation array
+                if (req.body.driver) {
+                    console.log("driver", driver);
+                    driver.reservations.push(r);
 
-                res.status(201).json(r)
+                    // Save the driver with the updated reservations array
+                    await driver.save();
+                }
+
+                // Populate the reservation after saving it
+                const populatedReservation = await Reservation.findById(r._id)
+                    .populate({
+                        path: 'client',
+                        populate: {
+                            path: 'user',
+                            populate: {
+                                path: 'role',
+                            },
+                        },
+                    })
+                    .populate({
+                        path: 'driver',
+                        populate: {
+                            path: 'user',
+                            populate: {
+                                path: 'role',
+                            },
+                        },
+                    })
+                    .populate({
+                        path: 'car',
+                        populate: [
+                            { path: 'category' },
+                            { path: 'marque' },
+                        ],
+                    });
+
+                // Return the populated reservation
+                res.status(201).json(populatedReservation);
             })
-            .catch(error => res.status(400).json(error))
-
-
-
-
-
-
+            .catch(error => res.status(400).json(error));
+    } else {
+        res.status(400).json({ error: "Car is not available" });
     }
-
 };
+
+
 exports.getReservations = async (req, res, next) => {
     try {
         const reservations = await Reservation.find()
@@ -103,6 +128,18 @@ exports.getReservations = async (req, res, next) => {
                 path: 'client',
                 populate: {
                     path: 'user',
+                    populate: {
+                        path: 'role'
+                    }
+                }
+            })
+            .populate({
+                path: 'driver',
+                populate: {
+                    path: 'user',
+                    populate: {
+                        path: 'role'
+                    }
                 }
             })
             .populate({
@@ -122,7 +159,7 @@ exports.getReservations = async (req, res, next) => {
 exports.getReservationById = async (req, res, next) => {
     try {
 
-        
+
         const reservation = await Reservation.findOne({ _id: req.params.id })
             .populate({
                 path: 'client',
@@ -149,9 +186,9 @@ exports.getReservationById = async (req, res, next) => {
                     { path: 'marque' }
                 ]
             });
-            
-            console.log("ressss",reservation);
-            
+
+        console.log("ressss", reservation);
+
         res.status(200).json(reservation);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -186,8 +223,8 @@ exports.getReservationByUserId = async (req, res, next) => {
                     path: 'driver',
                     populate: {
                         path: 'user',
-                        populate:{
-                            path:"role"
+                        populate: {
+                            path: "role"
                         }
                     }
                 })
@@ -208,12 +245,18 @@ exports.getReservationByUserId = async (req, res, next) => {
                     path: 'client',
                     populate: {
                         path: 'user',
+                        populate: {
+                            path: "role"
+                        }
                     }
                 })
                 .populate({
                     path: 'driver',
                     populate: {
                         path: 'user',
+                        populate: {
+                            path: "role"
+                        }
                     }
                 })
                 .populate({

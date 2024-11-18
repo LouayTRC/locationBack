@@ -11,6 +11,7 @@ const marqueRouter=require("./routers/marqueRouter");
 const reservationRouter=require("./routers/reservationRouter");
 const authRouter=require("./routers/authRouter");
 const roleRouter=require("./routers/roleRouter");
+const chatRouter=require("./routers/chatRouter");
 
 
 
@@ -48,6 +49,7 @@ app.use('/api/reservation',reservationRouter)
 app.use('/api/user',userRouter)
 app.use('/api/role',roleRouter)
 app.use('/api/auth',authRouter)
+app.use('/api/chat',chatRouter)
 
 
 

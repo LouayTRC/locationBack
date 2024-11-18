@@ -5,10 +5,6 @@ const messageSchema=mongoose.Schema({
         type:mongoose.Schema.ObjectId,
         ref:'User'
     },
-    discussion:{
-        type:mongoose.Schema.ObjectId,
-        ref:'Discussion'
-    },
     description:{
         type:String,
     }

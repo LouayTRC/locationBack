@@ -11,7 +11,8 @@ const driverSchema=mongoose.Schema({
     reservations: [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reservation'
-    }]
+    }],
+    genre:{type:String}
 },{versionKey:false,timestamps: true});
 
 module.exports=mongoose.model('Driver',driverSchema);
